@@ -253,6 +253,11 @@ static int betValue=0;
 
         jButton6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton6.setText("New Game");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel6.setText("Money:");
@@ -509,18 +514,19 @@ static int betValue=0;
     }                                    
 
     private void betActionPerformed(java.awt.event.ActionEvent evt) {                                    
-        addremoveBet();
+        
     }                                   
 
     private void hitButtonActionPerformed(java.awt.event.ActionEvent evt) {                                          
         System.out.print("player: ");
-        playerScore = drawCard(playerScore);
-        System.out.println(playerScore);
-        if (playerScore == 21) {
+        handTotal = drawCard(handTotal);
+        System.out.println(handTotal);
+        if (handTotal == 21) {
             endTurn();
-        }else if(playerScore>21){
-            System.out.println("LOSE");
+        }else if(handTotal>21){
+            System.out.println("BUST");
             changeMoney(findMoney() - user.bet);
+           restart();
         }
 
 
@@ -529,6 +535,10 @@ static int betValue=0;
     private void holdActionPerformed(java.awt.event.ActionEvent evt) {                                     
         endTurn();
     }                                    
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+       restart();
+    }                                        
 
     public static DecimalFormat df = new DecimalFormat("$#,###.00");
     public static player user = new player();
@@ -592,6 +602,7 @@ static int betValue=0;
      * @return
      */
     public static int drawCard(int points) {
+        System.out.println(points);
         //If the deck is empty, it resets it by calling upon the newDeck method
         if (deck.isEmpty()) {
             newDeck();
@@ -642,8 +653,7 @@ static int betValue=0;
             System.out.println("TIE");
         }
         //resets the hand for the bot and player
-        handTotal = 0;
-        botTotal = 0;
+        restart();
 
     }
     // Will get the bets from the player
@@ -663,23 +673,24 @@ static int betValue=0;
         }
 
     }
+    public static void restart(){
+        System.out.println("");
+        System.out.println("");
+        handTotal = 0;
+        botTotal = 0;
+        playerScore=0;
+        botScore = 0;
+        
+             System.out.print("player: ");
+        playerScore = drawCard(playerScore);
+        System.out.println(playerScore);
+        System.out.print("player: ");
+        playerScore = drawCard(playerScore);
+        System.out.println(playerScore);
+    }
 
 // This code will add or remove the player bets
-    public void addremoveBet() {
-
-        if (user.getBet() > 0) {
-            if (user.getTotal() > 21) {
-                System.out.println("you have busted");
-            } else if (user.getTotal() < dealer.calculateTotal() && dealer.calculateTotal() <= 21) {
-                System.out.println(user + " has lost");
-            } else if (user.getTotal() == 21) {
-                System.out.println("You have won blackjack!");
-            } else {
-                System.out.println("You have won");
-
-            }
-        }
-    }
+   
 
     /**
      * @param args the command line arguments
