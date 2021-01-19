@@ -465,7 +465,7 @@ public class BlackJack extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         //toggles the rules
         //the rules variable is a boolean determining the status of the textbox
-        txtRules.setVisible(rules);
+        jScrollPane1.setVisible(rules);
         rules = !rules;
     }//GEN-LAST:event_jButton4ActionPerformed
 
