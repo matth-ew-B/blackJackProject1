@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
+
 
 /**
  *
@@ -21,19 +26,29 @@ import java.io.FileWriter;
 public class BlackJack extends javax.swing.JFrame {
 
     static int betValue = 5;
+    
+    //determines if rules text box is shown
+    boolean rules = false;
+
+    //stores image file being outputted
+    static ImageIcon imageIcon = new ImageIcon();
+
+    //position of the card in terms of what label its image is on
+    static int pos = 0;
+    
+    //array containing labels that card images are being outputted on
+    //array allows counting up the labels
+    static JLabel[] cardpos;
 
     /**
      * Creates new form BlackJack
      */
     public BlackJack() {
 
-        handTotal = drawCard(handTotal);
-        System.out.println(handTotal);
-
-        handTotal = drawCard(handTotal);
-        System.out.println(handTotal);
-
         initComponents();
+        
+        //starts/sets up the game at program start up
+        restart();
 
         this.getContentPane().setBackground(new java.awt.Color(0, 100, 0));
     }
@@ -458,7 +473,10 @@ public class BlackJack extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel1AncestorAdded
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        //toggles the rules
+        //the rules variable is a boolean determining the status of the textbox
+        txtRules.setVisible(rules);
+        rules = !rules;
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jBetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBetActionPerformed
@@ -470,20 +488,38 @@ public class BlackJack extends javax.swing.JFrame {
     }//GEN-LAST:event_nameActionPerformed
 
     private void betActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betActionPerformed
+        //starts over the game
+        restart();
+        //hides bet button and shows hit and hold
+        setVis(false);
         getBet(Integer.parseInt(jBet.getText()));
 
     }//GEN-LAST:event_betActionPerformed
 
     private void hitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hitButtonActionPerformed
+        //the array of the image positions
+        cardpos = new JLabel[]{card3, card4, card5, card6, card7, card8, card9, card10, card11, card12, card13};
+        
         System.out.print("player: ");
+        
         handTotal = drawCard(handTotal);
+        //sets the score output label to the score/handTotal
+        lblPScore.setText("" + handTotal);
+        
+        //sets the image to its position and moves to the next position
+        cardpos[pos].setIcon(imageIcon);
+        pos++;
+
         System.out.println(" Total: " + handTotal);
         if (handTotal == 21) {
             endTurn();
         } else if (handTotal > 21) {
             System.out.println("BUST");
             loseBet(findMoney(), betValue);
-            restart();
+            
+            lblOutcome.setText("YOU BUSTED");
+            //shows bet button and hides hit and hold button
+            setVis(true);
         }
 
 
@@ -569,6 +605,8 @@ public class BlackJack extends javax.swing.JFrame {
         //removes and stores the card from a random index of the array
         int rand = (int) (Math.random() * (deck.size()));
         cards draw = deck.get(rand);
+        //gets image file name from the cards object class and gets the image file from it
+        imageIcon = new ImageIcon(new ImageIcon(deck.get(rand).img + ".png").getImage().getScaledInstance(120, 189, Image.SCALE_DEFAULT));
         System.out.print(deck.get(rand).name);
         deck.remove(rand);
 
@@ -593,27 +631,42 @@ public class BlackJack extends javax.swing.JFrame {
         return (points);
     }
 
-    //Non player turn
+    //After player has finished their turn
     public static void endTurn() {
+        //resets position from player turn and creates a new array of positions for the dealer
+        pos = 0;
+        cardpos = new JLabel[]{dCard2, dCard3, dCard4, dCard5, dCard6, dCard7, dCard8, dCard9, dCard10, dCard11, dCard12, dCard13};
+
+        
+        //the bot/dealers turn
         while (botTotal < 17) {
             botTotal = drawCard(botTotal);
+            //displays total score for dealer
+            lblDScore.setText("" + botTotal);
+            
+            //sets the image to its position and moves to the next position
+            cardpos[pos].setIcon(imageIcon);
+            pos++;
+
             System.out.println("");
         }
 
+        //determines outcome of the game
         System.out.println("DEALER:" + botTotal);
         System.out.println("PLAYER: " + handTotal);
         if (handTotal > 21 || (botTotal > handTotal && botTotal <= 21)) {
             System.out.println("LOSE");
+            lblOutcome.setText("DEALER WINS");
             loseBet(findMoney(), betValue);
         } else if (botTotal > 21 || (handTotal > botTotal && handTotal <= 21)) {
             System.out.println("WIN");
+            lblOutcome.setText("YOU WIN");
             addBet(findMoney(), betValue);
         } else {
             System.out.println("TIE");
+            lblOutcome.setText("TIE");
         }
-        //resets the hand for the bot and player
-        restart();
-
+        setVis(true);
     }
     // Will get the bets from the player
 
@@ -630,6 +683,11 @@ public class BlackJack extends javax.swing.JFrame {
         }
 
     }
+    
+    /**
+     * resets all values that are specific to each round
+     * 'creates' a new round
+     */
 
     public static void restart() {
         System.out.println("");
@@ -637,13 +695,50 @@ public class BlackJack extends javax.swing.JFrame {
         handTotal = 0;
         botTotal = 0;
         betValue = 5;
+        pos = 0;
+        
+        //takes off all card images from the board
+        cardpos = new JLabel[]{card3, card4, card5, card6, card7, card8, card9, card10, card11, card12, card13, dCard2, dCard3, dCard4, dCard5, dCard6, dCard7, dCard8, dCard9, dCard10, dCard11, dCard12, dCard13};
+        for (int i = 0; i < cardpos.length; i++) {
+            cardpos[i].setIcon(null);
+        }
+
+        //draws and displays the cards at the start of the turn
+        handTotal = drawCard(handTotal);
+        System.out.println(handTotal);
+        jLabel16.setIcon(imageIcon);
 
         handTotal = drawCard(handTotal);
         System.out.println(handTotal);
+        jLabel17.setIcon(imageIcon);
 
-        handTotal = drawCard(handTotal);
-        System.out.println(handTotal);
+        imageIcon = new ImageIcon(new ImageIcon("red_back.png").getImage().getScaledInstance(120, 189, Image.SCALE_DEFAULT));
+        jLabel8.setIcon(imageIcon);
+
+        botTotal = drawCard(botTotal);
+        jLabel9.setIcon(imageIcon);
+
+        //hides the hit and hold button and shows the bet button
+        setVis(true);
+
+        lblPScore.setText("" + handTotal);
+        lblDScore.setText("" + botTotal);
+
+        lblOutcome.setText("");
+
+
     }
+    
+    /**
+     * Decides the status of the hit, hold, and bet buttons
+     * @param gameStarted if the game is starting, hides the bet button and shows the other buttons
+     */
+    public void setVis(boolean gameStarted) {
+        hold.setVisible(!gameStarted);
+        hitButton.setVisible(!gameStarted);
+        bet.setVisible(gameStarted);
+    }
+
 
 // This code will add or remove the player bets
     public static void addBet(int currentMoney, int betValue) {

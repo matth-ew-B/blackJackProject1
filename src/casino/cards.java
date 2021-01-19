@@ -10,42 +10,57 @@ package casino;
  * @author matth
  */
 public class cards {
+
     protected String name;
     protected String suit;
     protected int num;
-    public cards(int sut,int nm){
+    //the name of the imagefile for each card
+    String img;
+
+    public cards(int sut, int nm) {
         num = nm;
         String sNum;
-        sNum = num+"";
-        switch(sut){
+        sNum = num + "";
+        switch (sut) {
             case 0:
                 suit = "clubs";
+                img = "C";
                 break;
             case 1:
                 suit = "spades";
+                img = "S";
                 break;
             case 2:
                 suit = "diamonds";
+                img = "D";
                 break;
             case 3:
-                suit = "hearts"; 
+                suit = "hearts";
+                img = "H";
                 break;
         }
-        switch (num){
+        switch (num) {
+            default:
+                img = num + img;
+                break;
             case 1:
                 sNum = "ace";
+                img = "A" + img;
                 break;
             case 11:
                 sNum = "jack";
+                img = "J" + img;
                 break;
             case 12:
                 sNum = "queen";
+                img = "Q" + img;
                 break;
             case 13:
                 sNum = "king";
+                img = "K" + img;
                 break;
         }
-            
-       name = sNum + " of "+suit;
+
+        name = sNum + " of " + suit;
     }
 }
