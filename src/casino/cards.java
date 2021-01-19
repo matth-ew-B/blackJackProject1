@@ -14,6 +14,7 @@ public class cards {
     protected String name;
     protected String suit;
     protected int num;
+    //the name of the imagefile for each card
     String img;
 
     public cards(int sut, int nm) {
