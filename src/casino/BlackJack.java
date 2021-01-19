@@ -20,19 +20,19 @@ import java.io.FileWriter;
  */
 public class BlackJack extends javax.swing.JFrame {
 
-    
-static int betValue=5;
+    static int betValue = 5;
+
     /**
      * Creates new form BlackJack
      */
     public BlackJack() {
-     
+
         handTotal = drawCard(handTotal);
         System.out.println(handTotal);
-        
+
         handTotal = drawCard(handTotal);
         System.out.println(handTotal);
-        
+
         initComponents();
 
         this.getContentPane().setBackground(new java.awt.Color(0, 100, 0));
@@ -347,18 +347,18 @@ static int betValue=5;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(40, 40, 40)
+                                .addComponent(dCard1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(dCard2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(dCard8, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(dCard3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(dCard7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(40, 40, 40)
-                                    .addComponent(dCard1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(28, 28, 28)
-                                    .addComponent(dCard2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(4, 4, 4)
-                                    .addComponent(dCard8, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(dCard7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(dCard4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(dCard5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(dCard6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -366,10 +366,9 @@ static int betValue=5;
                                 .addGap(17, 17, 17)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(dCard13, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(dCard12, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                                        .addComponent(dCard11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                    .addComponent(dCard12, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                                    .addComponent(dCard11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(127, 127, 127)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -443,19 +442,19 @@ static int betValue=5;
 
     private void betActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betActionPerformed
         getBet(Integer.parseInt(jBet.getText()));
-        
+
     }//GEN-LAST:event_betActionPerformed
 
     private void hitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hitButtonActionPerformed
         System.out.print("player: ");
         handTotal = drawCard(handTotal);
-        System.out.println(" Total: "+ handTotal);
+        System.out.println(" Total: " + handTotal);
         if (handTotal == 21) {
             endTurn();
-        }else if(handTotal>21){
+        } else if (handTotal > 21) {
             System.out.println("BUST");
-            loseBet(user.bank, betValue);
-           restart();
+            loseBet(findMoney(), betValue);
+            restart();
         }
 
 
@@ -466,8 +465,8 @@ static int betValue=5;
     }//GEN-LAST:event_holdActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       restart();
-       changeMoney(500);
+        restart();
+        changeMoney(500);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     public static DecimalFormat df = new DecimalFormat("$#,###.00");
@@ -537,7 +536,7 @@ static int betValue=5;
         if (deck.isEmpty()) {
             newDeck();
         }
-
+        getBet(0);
         //removes and stores the card from a random index of the array
         int rand = (int) (Math.random() * (deck.size()));
         cards draw = deck.get(rand);
@@ -576,10 +575,10 @@ static int betValue=5;
         System.out.println("PLAYER: " + handTotal);
         if (handTotal > 21 || (botTotal > handTotal && botTotal <= 21)) {
             System.out.println("LOSE");
-            loseBet(user.bank, betValue);
+            loseBet(findMoney(), betValue);
         } else if (botTotal > 21 || (handTotal > botTotal && handTotal <= 21)) {
             System.out.println("WIN");
-            addBet(user.bank, betValue);
+            addBet(findMoney(), betValue);
         } else {
             System.out.println("TIE");
         }
@@ -590,45 +589,43 @@ static int betValue=5;
     // Will get the bets from the player
 
     public static void getBet(int bet) {
-        
 
         {
             if (user.getBank() > 0) {
                 do {
                     betValue += bet;
-                    user.setBet(betValue);
                 } while (!(betValue > 0 && betValue <= user.getBank()));
-                
+
             }
 
         }
 
     }
-    public static void restart(){
+
+    public static void restart() {
         System.out.println("");
         System.out.println("");
         handTotal = 0;
         botTotal = 0;
         betValue = 5;
-      
-        
-             
+
         handTotal = drawCard(handTotal);
-       System.out.println(handTotal);
-        
+        System.out.println(handTotal);
+
         handTotal = drawCard(handTotal);
         System.out.println(handTotal);
     }
 
 // This code will add or remove the player bets
-   public static void addBet(int currentMoney,int betValue){
-      changeMoney(currentMoney+betValue); 
-       System.out.println(user.bank);
-       
-   }
-   public static void loseBet(int currentMoney,int betValue){
-       changeMoney(currentMoney-betValue); 
-   }
+    public static void addBet(int currentMoney, int betValue) {
+        changeMoney(currentMoney + betValue);
+        System.out.println(user.bank);
+
+    }
+
+    public static void loseBet(int currentMoney, int betValue) {
+        changeMoney(currentMoney - betValue);
+    }
 
     /**
      * @param args the command line arguments
